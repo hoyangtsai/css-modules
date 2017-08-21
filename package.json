@@ -1,5 +1,5 @@
 {
-  "name": "css_modules",
+  "name": "css-modules",
   "version": "1.0.0",
   "description": "Project created by reco",
   "scripts": {
@@ -9,15 +9,13 @@
     "upload": "reco upload"
   },
   "dependencies": {
-    "cache-loader": "^1.0.3",
     "classnames": "^2.2.5",
     "postcss-cssnext": "^3.0.2",
     "precss": "^2.0.0",
     "react-router": "^3.0.0"
   },
   "devDependencies": {
-    "babel-plugin-import": "^1.2.1",
-    "myapp-file-loader": "^0.2.0"
+    "babel-plugin-import": "^1.2.1"
   },
   "author": "hoyang",
   "license": "ISC"

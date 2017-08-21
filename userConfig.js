@@ -2,7 +2,8 @@ module.exports = {
   jsPath: "client/container",
   stylePath: "client/style",
   htmlPath: "client/html",
-  projectName: "css_modules",
+  imgPath: "client/image",
+  projectName: "css-modules",
   userName: "hoyang",
   sprites: {
     spritesmith: {
