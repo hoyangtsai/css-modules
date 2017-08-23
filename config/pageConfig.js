@@ -38,15 +38,9 @@ module.exports = {
         {
           loader: 'postcss-loader',
           options: {
-            // config: path.resolve(__dirname, '../postcss.config.js'),
-            // ctx: {
-            //   autoprefixer: { userConfig.browsersList }
-            // },
             plugins: (loader) => [
               require('postcss-cssnext')({ browsersList }),
               require('precss')()
-              // require('postcss-flexbugs-fixes'),
-              // require('postcss-gradientfixer')
             ]
           }
         }

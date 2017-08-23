@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 /*__sub__*/
 
 /*页面定制样式*/
-import style from 'currentDir/client/style/index.css';
+import header from 'currentDir/client/style/header.css';
 
 export default class Root extends React.Component {
   constructor(props) {
@@ -14,7 +14,7 @@ export default class Root extends React.Component {
   render() {
     return (
       <div>
-        <header className={style.headerBar1}><h2>AI開放平台</h2></header>
+        <header className={header.bar1}><h2>AI開放平台</h2></header>
       </div>
     );
   }
