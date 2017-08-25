@@ -14,7 +14,7 @@ export default class Root extends React.Component {
   render() {
     return (
       <div>
-        <header className={header.bar1}><h2>AI開放平台</h2></header>
+        <header className={header.bar1}><h2>AI開放平台</h2><i className={header.icoSucc}></i></header>
       </div>
     );
   }

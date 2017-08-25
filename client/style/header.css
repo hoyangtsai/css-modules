@@ -7,7 +7,6 @@
 $dark: #333;
 $pink: pink;
 
-
 .bar {
   display: flex;
   align-items: center;
@@ -26,8 +25,23 @@ $pink: pink;
   }
 }
 
-.bar2 {
-  composes: bar;
-  background: var(--pink);
-  color: var(--yg);
+.icoInfo {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  background: url(../slice/com/ico-info.png) no-repeat;
+}
+
+.icoSucc {
+  display: inline-block;
+  width: 51px;
+  height: 40px;
+  background: url(../slice/com/icon-status-succ.png) no-repeat;
+}
+
+.icoWarn {
+  display: inline-block;
+  width: 10px;
+  height: 43px;
+  background: url(../slice/com/icon-status-warn.png) no-repeat;
 }

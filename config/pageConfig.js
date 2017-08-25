@@ -1,4 +1,6 @@
 const path = require('path');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const extractCSS = new ExtractTextPlugin('[name].css');
 
 let browsersList = [
   'last 4 versions',
@@ -7,39 +9,80 @@ let browsersList = [
   'iOS>=7'
 ];
 
-let spriteOpts = {
-  stylesheetPath: './client/style',
-  spritePath: './client/slice/',
-  relativeTo: 'rule',
-  filterBy: (image) => {
-    if (/image/i.test(image.url)) return Promise.reject();
-    return Promise.resolve(image);
-  },
-  groupBy: (image) => {
-    const groups = image.url.split('/', -1);
-    if (groups.length < 3) return Promise.reject();
-    let groupName = '';
-    if (groups.length > 4) {
-      groupName = groups[groups.length - 3] + '.' + groups[groups.length - 2];
-    } else {
-      groupName = groups[groups.length - 2];
-    }
-    return Promise.resolve(groupName);
-  },
-  hooks: {
-    //更新生成后的规则，这里主要是改变了生成后的url访问路径
-    onUpdateRule: function (rule, token, image) {
-      let rel = path.relative(
-        path.dirname(image.styleFilePath),
-        path.resolve(__dirname, './src')
-      );
-      rel = rel.replace(/\\+/g, '\/');
-      const spriteUrl = /\/sprite\/sprite.*/.exec(image.spriteUrl);
-      image.spriteUrl = rel + spriteUrl;
-      sprites.updateRule(rule, comment, image);
+let postcssPlugin = [
+  require('postcss-cssnext')({ browsersList }),
+  require('precss')()
+];
+
+if (process.env.NODE_ENV === 'production') {
+  let spriteOpts = {
+    stylesheetPath: './client/style',
+    spritePath: './publish/sprite/',
+    spritesmith: {padding: 4},
+    relativeTo: 'rule',
+    filterBy: (image) => {
+      if (/image/i.test(image.url)) return Promise.reject();
+      return Promise.resolve(image);
+    },
+    groupBy: (image) => {
+      let groups = image.url.split('/', -1);
+      if (groups.length < 3) return Promise.reject();
+      let groupName = '';
+      if (groups.length > 4) {
+        groupName = groups[groups.length - 3] + '.' + groups[groups.length - 2];
+      } else {
+        groupName = groups[groups.length - 2];
+      }
+      return Promise.resolve(groupName);
     }
   }
+
+  postcssPlugin.push(
+    require('postcss-sprites')(spriteOpts)
+  )
 }
+
+let cssLoader;
+if (process.env.NODE_ENV === 'production') {
+  cssLoader = ExtractTextPlugin.extract({
+    fallback: 'style-loader',
+    use: [
+      {
+        loader: 'css-loader',
+        options: {
+          importLoaders: 1,
+          modules: true,
+          localIdentName: '[name]__[local]--[hash:base64:5]'
+        }
+      },
+      {
+        loader: 'postcss-loader',
+        options: {
+          plugins: (loader) => postcssPlugin
+        }
+      }
+    ]
+  })
+} else {
+  cssLoader = [
+    'style-loader',
+    {
+      loader: 'css-loader',
+      options: {
+        importLoaders: 1,
+        modules: true,
+        localIdentName: '[name]__[local]--[hash:base64:5]'
+      }
+    },
+    {
+      loader: 'postcss-loader',
+      options: {
+        plugins: (loader) => postcssPlugin
+      }
+    }
+  ]
+}
+
 
 module.exports = {
   path: "", //页面层级
@@ -59,27 +102,15 @@ module.exports = {
   // external loaders for webpack
   extLoaders: [
     {
+      test: /\.(jpe?g|png|gif|ttf|eot|woff2?)(\?.*)?$/,
+      loader: 'file-loader',
+      options: {
+        name: '[path][name].[ext]'
+      }
+    },
+    {
       test: /\.css$/,
-      loader: [
-        'style-loader',
-        { loader: 'css-loader',
-          options: {
-            importLoaders: 1,
-            modules: true,
-            localIdentName: '[name]__[local]--[hash:base64:5]'
-          }
-        },
-        {
-          loader: 'postcss-loader',
-          options: {
-            plugins: (loader) => [
-              require('postcss-cssnext')({ browsersList }),
-              require('precss')(),
-              require('postcss-sprites')
-            ]
-          }
-        }
-      ]
+      use: cssLoader
     }
   ]
 }
